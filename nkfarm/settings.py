@@ -57,3 +57,18 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# TEMPORARY: auto-create admin user for Render free plan
+import os
+if os.environ.get("RENDER"):
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+    try:
+        if not User.objects.filter(username="admin").exists():
+            User.objects.create_superuser(
+                username="admin",
+                email="",
+                password="admin"
+            )
+    except Exception as e:
+        print(e)
